@@ -1,0 +1,8 @@
+
+server:
+    port: 8080
+
+spring:
+    data:
+        mongodb:
+            uri: mongodb+srv://dbTenshi:tenshi321@cluster0-kscxy.mongodb.net/test?retryWrites=true&w=majority  
