@@ -1,7 +1,10 @@
 package com.conductor.challenge.resources;
 
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -42,13 +45,67 @@ public class Test {
 		
     }
 
-	@PostMapping(path = "/save", produces = "application/json")
+	@PostMapping(path = "/send", produces = "application/json")
 	public String save(@RequestBody Dados dados) {
 						
-		dadosRepository.save(dados);
-		
-		return "Mensagem enviada!";
+		try {
+			
+			Socket cliente = new Socket("localhost", 2222);
+			ObjectOutputStream entrada = new ObjectOutputStream(cliente.getOutputStream());
+			entrada.writeUTF(dados.getName());
+			entrada.flush();
+			entrada.close();
+			
+			cliente.close();
+			System.out.println("Conexão encerrada");
+			
+			dadosRepository.save(dados);
+
+			
+		} catch (Exception e) {
+			
+			System.out.println("Erro: " + e.getMessage());
+			
+		}
+				
+		return "Mensagem enviada, "+dados.getName();
 		
 	}
+
+	@PostMapping(path = "/send/pipe", produces = "text/plain;charset=UTF-8")
+	public String savePipe(@RequestBody String dados) {	
+		
+		Dados dt = new Dados();
+		
+		String[] value_split = dados.split("\\|");
+		
+		dt.setName(value_split[0]);
+		dt.setDate(value_split[1]);
+		dt.setState(value_split[2]);
+		dt.setBravery(value_split[3]);
+		dt.setLow(value_split[4]);
+		
+		try {
+			
+			Socket cliente = new Socket("localhost", 2222);
+			ObjectOutputStream entrada = new ObjectOutputStream(cliente.getOutputStream());
+			entrada.writeUTF(dt.getName());
+			entrada.flush();
+			entrada.close();
+			
+			cliente.close();
+			System.out.println("Conexão encerrada");
+			
+			dadosRepository.save(dt);
+
+			
+		} catch (Exception e) {
+			
+			System.out.println("Erro: " + e.getMessage());
+			
+		}
+				
+		return "Mensagem enviada, "+dt;
+	}	
 	
 }
