@@ -37,15 +37,15 @@ public class Test {
 	}
 	
 	@GetMapping("/filter")
-    public String filter(String id) {
-    	
-        Optional<Dados> ts = dadosRepository.findById(id);
+	public String filter(String id) {
+
+		Optional<Dados> ts = dadosRepository.findById(id);
 
 		return ts.toString();
-		
-    }
 
-	@PostMapping(path = "/send", produces = "application/json")
+	}
+
+	@PostMapping(path = "/message", produces = "application/json")
 	public String save(@RequestBody Dados dados) {
 						
 		try {
@@ -72,7 +72,7 @@ public class Test {
 		
 	}
 
-	@PostMapping(path = "/send/pipe", produces = "text/plain;charset=UTF-8")
+	@PostMapping(path = "/message/pipe", produces = "text/plain;charset=UTF-8")
 	public String savePipe(@RequestBody String dados) {	
 		
 		Dados dt = new Dados();
